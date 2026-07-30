@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart3, Download, RefreshCw, Users, Star, Smile, Search, LogOut } from 'lucide-react';
+import { BarChart3, Download, RefreshCw, Users, Star, Smile, Search, LogOut, Trash2 } from 'lucide-react';
 
 export default function AdminDashboard({ onLogout, adminKey }) {
   const [stats, setStats] = useState(null);
@@ -31,6 +31,25 @@ export default function AdminDashboard({ onLogout, adminKey }) {
 
   const handleExportCSV = () => {
     window.open(`/api/admin/export?admin_key=${encodeURIComponent(adminKey || '')}`, '_blank');
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this feedback? This cannot be undone.")) return;
+    
+    try {
+      const res = await fetch(`/api/admin/feedback/${id}?admin_key=${encodeURIComponent(adminKey || '')}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        fetchStats();
+      } else {
+        alert(data.message || 'Failed to delete feedback');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Error deleting feedback');
+    }
   };
 
   const filteredEntries = stats?.recentEntries?.filter((entry) => {
@@ -207,6 +226,7 @@ export default function AdminDashboard({ onLogout, adminKey }) {
                     <th>Emoji Rating</th>
                     <th>Avg Star</th>
                     <th>Comments</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -234,6 +254,19 @@ export default function AdminDashboard({ onLogout, adminKey }) {
                           <td style={{ fontWeight: 700, color: '#fbbf24' }}>⭐ {avg}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {row.comments || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <button 
+                              onClick={() => handleDelete(row.id)}
+                              style={{ 
+                                background: 'transparent', border: 'none', color: '#ef4444', 
+                                cursor: 'pointer', padding: '0.3rem', borderRadius: '4px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                              }}
+                              title="Delete Feedback"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </td>
                         </tr>
                       );

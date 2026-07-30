@@ -229,6 +229,30 @@ app.get('/api/admin/export', async (req, res) => {
   }
 });
 
+// 5. Delete Feedback Endpoint
+app.delete('/api/admin/feedback/:id', async (req, res) => {
+  try {
+    const { ADMIN_PASSWORD } = await getPasscodes();
+    const authHeader = req.headers['authorization'];
+    
+    if (authHeader !== `Bearer ${ADMIN_PASSWORD}` && req.query.admin_key !== ADMIN_PASSWORD) {
+      return res.status(403).json({ success: false, message: 'Unauthorized admin access.' });
+    }
+
+    const feedbackId = req.params.id;
+    const [result] = await pool.query('DELETE FROM feedback WHERE id = ?', [feedbackId]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Feedback not found.' });
+    }
+
+    res.json({ success: true, message: 'Feedback deleted successfully.' });
+  } catch (err) {
+    console.error('Error deleting feedback:', err);
+    return res.status(500).json({ success: false, message: 'Database Error' });
+  }
+});
+
 // Serve frontend static files if in production build
 const frontendBuildPath = path.join(__dirname, '../frontend/dist');
 app.use(express.static(frontendBuildPath));
