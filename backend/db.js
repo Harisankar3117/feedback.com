@@ -20,7 +20,7 @@ async function initDB() {
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || 'H@3117'
     });
-    
+
     // Ensure database exists
     await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'feedback'}\``);
     await tempConn.end();
