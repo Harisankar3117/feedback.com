@@ -48,8 +48,11 @@ async function initDB() {
         quick_feedback_tags TEXT,
         comments TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
+      ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
+
+    // Force existing tables to support 4-byte emojis
+    await pool.query(`ALTER TABLE feedback CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
 
     // Create settings table for passwords
     await pool.query(`
