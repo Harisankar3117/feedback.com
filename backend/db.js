@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
+  port: parseInt(process.env.DB_PORT || 3306, 10),
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASS || 'H@3117',
   database: process.env.DB_NAME || 'feedback', // We'll add a fallback if it doesn't exist yet
@@ -18,7 +18,7 @@ async function initDB() {
   try {
     tempConn = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 3306,
+      port: parseInt(process.env.DB_PORT || 3306, 10),
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || 'H@3117'
     });
