@@ -1,0 +1,22 @@
+{
+  "name": "networking-workshop-feedback",
+  "version": "1.0.0",
+  "description": "Computer Networking Workshop Feedback Web Application",
+  "main": "backend/index.js",
+  "scripts": {
+    "start": "node backend/index.js",
+    "server": "node backend/index.js",
+    "frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\"",
+    "build": "npm run build --prefix frontend"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "mysql2": "^3.23.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
