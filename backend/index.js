@@ -72,12 +72,11 @@ app.post('/api/feedback', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Please complete all required fields.' });
   }
 
-  const tagsJson = Array.isArray(quick_feedback_tags) ? JSON.stringify(quick_feedback_tags) : JSON.stringify([]);
-
+  const sql = `
     INSERT INTO feedback (
       name, department, year, college_name, mobile_number, student_mail, emoji_rating, q2_confidence, q3_valuable_lab, q4_least_clear, q5_balance, q6_instructor, q7_equipment, q8_recommend, q9_skill, q10_advanced_topics, comments
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-
+  `;
   try {
     const [result] = await pool.query(sql, [
       name || 'Anonymous Student',
