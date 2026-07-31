@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { User, Building2, MessageSquare, Send, Sparkles, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import EmojiRating from './EmojiRating';
-import StarRating from './StarRating';
-import TagSelector from './TagSelector';
 
 export default function FeedbackForm({ onSubmitSuccess }) {
   const [step, setStep] = useState(1);
@@ -77,8 +75,6 @@ export default function FeedbackForm({ onSubmitSuccess }) {
     setStep(1);
   };
 
-  const handleToggleTag = (tag) => {
-    setFormData((prev) => {
   const handleToggleTopic = (topic) => {
     setFormData((prev) => {
       const exists = prev.q10_advanced_topics.includes(topic);
