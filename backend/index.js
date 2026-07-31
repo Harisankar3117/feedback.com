@@ -53,6 +53,7 @@ app.post('/api/feedback', async (req, res) => {
     year,
     college_name,
     mobile_number,
+    student_mail,
     emoji_rating,
     content_quality,
     teaching_clarity,
@@ -71,8 +72,8 @@ app.post('/api/feedback', async (req, res) => {
 
   const sql = `
     INSERT INTO feedback (
-      name, department, year, college_name, mobile_number, emoji_rating, content_quality, teaching_clarity, interaction_level, overall_experience, quick_feedback_tags, comments
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      name, department, year, college_name, mobile_number, student_mail, emoji_rating, content_quality, teaching_clarity, interaction_level, overall_experience, quick_feedback_tags, comments
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   try {
@@ -82,6 +83,7 @@ app.post('/api/feedback', async (req, res) => {
       year || 'Unspecified',
       college_name || 'Unspecified',
       mobile_number || 'Unspecified',
+      student_mail || 'Unspecified',
       emoji_rating,
       parseInt(content_quality, 10),
       parseInt(teaching_clarity, 10),
@@ -205,7 +207,7 @@ app.get('/api/admin/export', async (req, res) => {
 
     const [rows] = await pool.query(`SELECT * FROM feedback ORDER BY timestamp DESC`);
 
-    let csvContent = 'Submission ID,Timestamp,Name,College Name,Mobile Number,Department,Year,Emoji Rating,Content Quality,Teaching Clarity,Interaction Level,Overall Experience,Quick Tags,Comments\n';
+    let csvContent = 'Submission ID,Timestamp,Name,College Name,Mobile Number,Email,Department,Year,Emoji Rating,Content Quality,Teaching Clarity,Interaction Level,Overall Experience,Quick Tags,Comments\n';
     
     rows.forEach(row => {
       let tagsStr = '';
@@ -217,7 +219,7 @@ app.get('/api/admin/export', async (req, res) => {
       
       const cleanComments = (row.comments || '').replace(/"/g, '""').replace(/\n/g, ' ');
 
-      csvContent += `${row.id},"${row.timestamp}","${row.name || ''}","${row.college_name || ''}","${row.mobile_number || ''}","${row.department || ''}","${row.year || ''}","${row.emoji_rating || ''}",${row.content_quality},${row.teaching_clarity},${row.interaction_level},${row.overall_experience},"${tagsStr}","${cleanComments}"\n`;
+      csvContent += `${row.id},"${row.timestamp}","${row.name || ''}","${row.college_name || ''}","${row.mobile_number || ''}","${row.student_mail || ''}","${row.department || ''}","${row.year || ''}","${row.emoji_rating || ''}",${row.content_quality},${row.teaching_clarity},${row.interaction_level},${row.overall_experience},"${tagsStr}","${cleanComments}"\n`;
     });
 
     res.setHeader('Content-Type', 'text/csv');

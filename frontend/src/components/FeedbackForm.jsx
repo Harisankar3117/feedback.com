@@ -12,6 +12,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
     year: '',
     college_name: '',
     mobile_number: '',
+    student_mail: '',
     emoji_rating: '',
     content_quality: 0,
     teaching_clarity: 0,
@@ -26,11 +27,14 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
   // Validation logic
   const isStep1Valid = () => {
-    if (!formData.name || !formData.college_name || !formData.department || !formData.year || !formData.mobile_number) {
+    if (!formData.name || !formData.college_name || !formData.department || !formData.year || !formData.mobile_number || !formData.student_mail) {
       return false; // All fields are required
     }
     if (!/^\d{10}$/.test(formData.mobile_number)) {
       return false; // Mobile must be 10 digits
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.student_mail)) {
+      return false; // Basic email validation
     }
     return true;
   };
@@ -46,7 +50,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
   const handleNext = (e) => {
     e.preventDefault();
     if (!isStep1Valid()) {
-      setErrorMsg('Please fill out all fields completely, including a valid 10-digit mobile number.');
+      setErrorMsg('Please fill out all fields completely, including a valid 10-digit mobile number and valid email address.');
       return;
     }
     setErrorMsg('');
@@ -211,6 +215,19 @@ export default function FeedbackForm({ onSubmitSuccess }) {
                   placeholder="10-digit number"
                   value={formData.mobile_number}
                   onChange={(e) => setFormData({ ...formData, mobile_number: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" htmlFor="student-mail">Email Address <span style={{ color: 'var(--error)' }}>*</span></label>
+                <input
+                  id="student-mail"
+                  type="email"
+                  className="form-input"
+                  placeholder="e.g. name@example.com"
+                  value={formData.student_mail}
+                  onChange={(e) => setFormData({ ...formData, student_mail: e.target.value })}
                   required
                 />
               </div>

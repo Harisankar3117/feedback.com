@@ -40,6 +40,7 @@ async function initDB() {
         year VARCHAR(50),
         college_name VARCHAR(255),
         mobile_number VARCHAR(20),
+        student_mail VARCHAR(255),
         emoji_rating VARCHAR(50),
         content_quality INT,
         teaching_clarity INT,
@@ -50,6 +51,13 @@ async function initDB() {
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
       ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
+
+    // Add student_mail column if it doesn't exist
+    try {
+      await pool.query('ALTER TABLE feedback ADD COLUMN student_mail VARCHAR(255)');
+    } catch (e) {
+      // Ignore if it already exists
+    }
 
     // Force existing tables to support 4-byte emojis
     await pool.query(`ALTER TABLE feedback CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
