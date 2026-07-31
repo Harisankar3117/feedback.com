@@ -269,11 +269,11 @@ export default function FeedbackForm({ onSubmitSuccess }) {
           </div>
 
           {/* New Custom Questions */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             
             {/* Q2 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 2. How confident do you now feel in your ability to cable, configure, and integrate switches, routers, and access points? <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
@@ -288,7 +288,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q3 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 3. Which hands-on lab did you find MOST valuable? (Select one) <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
@@ -303,7 +303,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q4 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.4rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 4. Which topic or lab did you find LEAST clear or could be improved? <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <input type="text" className="form-input" placeholder="Your answer" value={formData.q4_least_clear} onChange={(e) => setFormData({...formData, q4_least_clear: e.target.value})} />
@@ -311,7 +311,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q5 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 5. The balance between lecture time and hands-on lab time was: <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
@@ -326,7 +326,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q6 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 6. The instructor's ability to explain complex networking concepts clearly was: <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
@@ -341,7 +341,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q7 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 7. Was the provided lab equipment (hardware, cables) sufficient and functional for all activities? <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
@@ -356,9 +356,9 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q8 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 8. Based on this bootcamp, how likely are you to recommend this training to a friend or colleague? <span style={{ color: 'var(--error)' }}>*</span>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-subtle)' }}>(0 = Not at all likely, 5 = Extremely likely)</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-subtle)', fontFamily: 'inherit' }}>(0 = Not at all likely, 5 = Extremely likely)</div>
               </label>
               <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px', color: 'var(--text-main)' }}>
                 {['0', '1', '2', '3', '4', '5'].map(opt => (
@@ -372,7 +372,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q9 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.4rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 9. What is one specific skill you learned this week that you are most excited to apply? <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <input type="text" className="form-input" placeholder="Your answer" value={formData.q9_skill} onChange={(e) => setFormData({...formData, q9_skill: e.target.value})} />
@@ -380,7 +380,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
             {/* Q10 */}
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.8rem', fontFamily: 'Times New Roman, serif', fontSize: '1rem', lineHeight: '1.6' }}>
                 10. Which of these advanced topics would you be most interested in for a future session? (Select your top 2) <span style={{ color: 'var(--error)' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
