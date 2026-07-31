@@ -19,6 +19,15 @@ export default function FeedbackForm({ onSubmitSuccess }) {
     interaction_level: 0,
     overall_experience: 0,
     quick_feedback_tags: [],
+    q2_confidence: '',
+    q3_valuable_lab: '',
+    q4_least_clear: '',
+    q5_balance: '',
+    q6_instructor: '',
+    q7_equipment: '',
+    q8_recommend: '',
+    q9_skill: '',
+    q10_advanced_topics: [],
     comments: ''
   });
 
@@ -41,10 +50,15 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
   const isFormValid =
     formData.emoji_rating !== '' &&
-    formData.content_quality > 0 &&
-    formData.teaching_clarity > 0 &&
-    formData.interaction_level > 0 &&
-    formData.overall_experience > 0 &&
+    formData.q2_confidence !== '' &&
+    formData.q3_valuable_lab !== '' &&
+    formData.q4_least_clear.trim() !== '' &&
+    formData.q5_balance !== '' &&
+    formData.q6_instructor !== '' &&
+    formData.q7_equipment !== '' &&
+    formData.q8_recommend !== '' &&
+    formData.q9_skill.trim() !== '' &&
+    formData.q10_advanced_topics.length > 0 &&
     formData.comments.trim() !== '';
 
   const handleNext = (e) => {
@@ -65,20 +79,25 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
   const handleToggleTag = (tag) => {
     setFormData((prev) => {
-      const exists = prev.quick_feedback_tags.includes(tag);
-      return {
-        ...prev,
-        quick_feedback_tags: exists
-          ? prev.quick_feedback_tags.filter((t) => t !== tag)
-          : [...prev.quick_feedback_tags, tag]
-      };
+  const handleToggleTopic = (topic) => {
+    setFormData((prev) => {
+      const exists = prev.q10_advanced_topics.includes(topic);
+      let newTopics = exists
+        ? prev.q10_advanced_topics.filter((t) => t !== topic)
+        : [...prev.q10_advanced_topics, topic];
+      
+      // Limit to max 2
+      if (newTopics.length > 2) {
+        newTopics = newTopics.slice(1);
+      }
+      return { ...prev, q10_advanced_topics: newTopics };
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) {
-      setErrorMsg('Please select your overall emoji rating, rate all 4 categories, and provide detailed comments.');
+      setErrorMsg('Please answer all required questions before submitting.');
       return;
     }
 
@@ -253,48 +272,131 @@ export default function FeedbackForm({ onSubmitSuccess }) {
             />
           </div>
 
-          {/* C. Category Ratings (Star Rating System 1-5) */}
-          <div>
-            <label className="form-label" style={{ fontSize: '1rem', marginBottom: '0.8rem', color: '#ffffff' }}>
-              ⭐ Category Ratings <span style={{ color: 'var(--error)' }}>*</span>
-            </label>
-            <div className="ratings-container">
-              <StarRating
-                title="Content Quality"
-                subtitle="Relevance & depth of computer networking concepts"
-                rating={formData.content_quality}
-                onChange={(val) => setFormData({ ...formData, content_quality: val })}
-              />
-              <StarRating
-                title="Teaching Clarity"
-                subtitle="Explanation of protocols, architectures & topics"
-                rating={formData.teaching_clarity}
-                onChange={(val) => setFormData({ ...formData, teaching_clarity: val })}
-              />
-              <StarRating
-                title="Interaction Level"
-                subtitle="Q&A session, hands-on engagement & instructor support"
-                rating={formData.interaction_level}
-                onChange={(val) => setFormData({ ...formData, interaction_level: val })}
-              />
-              <StarRating
-                title="Overall Experience"
-                subtitle="Overall organization and value of the workshop"
-                rating={formData.overall_experience}
-                onChange={(val) => setFormData({ ...formData, overall_experience: val })}
-              />
+          {/* New Custom Questions */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            
+            {/* Q2 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                2. How confident do you now feel in your ability to cable, configure, and integrate switches, routers, and access points? <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Not Confident', 'Slightly Confident', 'Neutral', 'Confident', 'Very Confident'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" name="q2_confidence" value={opt} checked={formData.q2_confidence === opt} onChange={(e) => setFormData({...formData, q2_confidence: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* D. Quick Feedback Buttons (Multi-select chips) */}
-          <div>
-            <label className="form-label" style={{ fontSize: '0.95rem', marginBottom: '0.4rem', color: 'var(--text-main)' }}>
-              🎯 Quick Feedback Tags <span style={{ fontSize: '0.75rem', color: 'var(--text-subtle)' }}>(Select all that apply)</span>
-            </label>
-            <TagSelector
-              selectedTags={formData.quick_feedback_tags}
-              onToggleTag={handleToggleTag}
-            />
+            {/* Q3 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                3. Which hands-on lab did you find MOST valuable? (Select one) <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Cable crimping & testing', 'Switch configuration (VLANs, Port Security)', 'Router configuration (Interfaces, Static Routes)', 'Access Point setup (SSID, Security)', 'Integrated network troubleshooting'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" name="q3_valuable_lab" value={opt} checked={formData.q3_valuable_lab === opt} onChange={(e) => setFormData({...formData, q3_valuable_lab: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Q4 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.4rem' }}>
+                4. Which topic or lab did you find LEAST clear or could be improved? <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <input type="text" className="form-input" placeholder="Your answer" value={formData.q4_least_clear} onChange={(e) => setFormData({...formData, q4_least_clear: e.target.value})} />
+            </div>
+
+            {/* Q5 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                5. The balance between lecture time and hands-on lab time was: <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Too much lecture, not enough lab', 'Just right', 'Too much lab, not enough lecture'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" name="q5_balance" value={opt} checked={formData.q5_balance === opt} onChange={(e) => setFormData({...formData, q5_balance: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Q6 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                6. The instructor's ability to explain complex networking concepts clearly was: <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Poor', 'Fair', 'Good', 'Excellent'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" name="q6_instructor" value={opt} checked={formData.q6_instructor === opt} onChange={(e) => setFormData({...formData, q6_instructor: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Q7 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                7. Was the provided lab equipment (hardware, cables) sufficient and functional for all activities? <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Yes, everything worked well.', 'Mostly, but there were some minor issues.', 'No, there were significant problems that hindered learning.'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" name="q7_equipment" value={opt} checked={formData.q7_equipment === opt} onChange={(e) => setFormData({...formData, q7_equipment: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Q8 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                8. Based on this bootcamp, how likely are you to recommend this training to a friend or colleague? <span style={{ color: 'var(--error)' }}>*</span>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-subtle)' }}>(0 = Not at all likely, 5 = Extremely likely)</div>
+              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px', color: 'var(--text-main)' }}>
+                {['0', '1', '2', '3', '4', '5'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+                    <span style={{ fontSize: '0.85rem' }}>{opt}</span>
+                    <input type="radio" name="q8_recommend" value={opt} checked={formData.q8_recommend === opt} onChange={(e) => setFormData({...formData, q8_recommend: e.target.value})} style={{ accentColor: 'var(--accent)' }} />
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Q9 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.4rem' }}>
+                9. What is one specific skill you learned this week that you are most excited to apply? <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <input type="text" className="form-input" placeholder="Your answer" value={formData.q9_skill} onChange={(e) => setFormData({...formData, q9_skill: e.target.value})} />
+            </div>
+
+            {/* Q10 */}
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ color: '#ffffff', marginBottom: '0.6rem' }}>
+                10. Which of these advanced topics would you be most interested in for a future session? (Select your top 2) <span style={{ color: 'var(--error)' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', color: 'var(--text-main)' }}>
+                {['Network Security (Firewalls, ACLs)', 'Dynamic Routing (OSPF, EIGRP)', 'Advanced Switching (STP, EtherChannel)', 'Wireless Networking (Enterprise)', 'Network Automation'].map(opt => (
+                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={formData.q10_advanced_topics.includes(opt)} onChange={() => handleToggleTopic(opt)} style={{ accentColor: 'var(--accent)', width: '16px', height: '16px' }} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
           </div>
 
           {/* E. Detailed Feedback Textarea */}
@@ -341,7 +443,7 @@ export default function FeedbackForm({ onSubmitSuccess }) {
 
           {!isFormValid && (
             <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-subtle)', marginTop: '-0.8rem' }}>
-              Please select an emoji, rate all 4 categories, and provide comments to enable submission.
+              Please answer all required questions to enable submission.
             </p>
           )}
         </form>

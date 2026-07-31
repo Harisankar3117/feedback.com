@@ -55,26 +55,28 @@ app.post('/api/feedback', async (req, res) => {
     mobile_number,
     student_mail,
     emoji_rating,
-    content_quality,
-    teaching_clarity,
-    interaction_level,
-    overall_experience,
-    quick_feedback_tags,
+    q2_confidence,
+    q3_valuable_lab,
+    q4_least_clear,
+    q5_balance,
+    q6_instructor,
+    q7_equipment,
+    q8_recommend,
+    q9_skill,
+    q10_advanced_topics,
     comments
   } = req.body;
 
   // Validation: Emoji & star ratings are mandatory
-  if (!emoji_rating || !content_quality || !teaching_clarity || !interaction_level || !overall_experience) {
-    return res.status(400).json({ success: false, message: 'Please complete all required ratings.' });
+  if (!emoji_rating || !q2_confidence || !q3_valuable_lab || !q5_balance || !q6_instructor || !q7_equipment || !q8_recommend) {
+    return res.status(400).json({ success: false, message: 'Please complete all required fields.' });
   }
 
   const tagsJson = Array.isArray(quick_feedback_tags) ? JSON.stringify(quick_feedback_tags) : JSON.stringify([]);
 
-  const sql = `
     INSERT INTO feedback (
-      name, department, year, college_name, mobile_number, student_mail, emoji_rating, content_quality, teaching_clarity, interaction_level, overall_experience, quick_feedback_tags, comments
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+      name, department, year, college_name, mobile_number, student_mail, emoji_rating, q2_confidence, q3_valuable_lab, q4_least_clear, q5_balance, q6_instructor, q7_equipment, q8_recommend, q9_skill, q10_advanced_topics, comments
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
   try {
     const [result] = await pool.query(sql, [
@@ -85,11 +87,15 @@ app.post('/api/feedback', async (req, res) => {
       mobile_number || 'Unspecified',
       student_mail || 'Unspecified',
       emoji_rating,
-      parseInt(content_quality, 10),
-      parseInt(teaching_clarity, 10),
-      parseInt(interaction_level, 10),
-      parseInt(overall_experience, 10),
-      tagsJson,
+      q2_confidence,
+      q3_valuable_lab,
+      q4_least_clear || '',
+      q5_balance,
+      q6_instructor,
+      q7_equipment,
+      q8_recommend,
+      q9_skill || '',
+      JSON.stringify(Array.isArray(q10_advanced_topics) ? q10_advanced_topics : []),
       comments || ''
     ]);
 
@@ -144,11 +150,6 @@ app.get('/api/admin/stats', async (req, res) => {
     const tagCounts = {};
 
     rows.forEach(row => {
-      totalContent += row.content_quality || 0;
-      totalTeaching += row.teaching_clarity || 0;
-      totalInteraction += row.interaction_level || 0;
-      totalOverall += row.overall_experience || 0;
-
       // Emoji count mapping
       if (row.emoji_rating) {
         if (row.emoji_rating.includes('Poor') || row.emoji_rating.includes('😡')) emojiCounts.Poor++;
@@ -157,9 +158,9 @@ app.get('/api/admin/stats', async (req, res) => {
         else if (row.emoji_rating.includes('Excellent') || row.emoji_rating.includes('🤩')) emojiCounts.Excellent++;
       }
 
-      // Tags count mapping
+      // Tags count mapping for topics
       try {
-        const tags = JSON.parse(row.quick_feedback_tags || '[]');
+        const tags = JSON.parse(row.q10_advanced_topics || '[]');
         if (Array.isArray(tags)) {
           tags.forEach(tag => {
             tagCounts[tag] = (tagCounts[tag] || 0) + 1;
@@ -170,21 +171,15 @@ app.get('/api/admin/stats', async (req, res) => {
       }
     });
 
-    const avgContent = parseFloat((totalContent / totalSubmissions).toFixed(2));
-    const avgTeaching = parseFloat((totalTeaching / totalSubmissions).toFixed(2));
-    const avgInteraction = parseFloat((totalInteraction / totalSubmissions).toFixed(2));
-    const avgOverall = parseFloat((totalOverall / totalSubmissions).toFixed(2));
-    const grandAvg = parseFloat(((avgContent + avgTeaching + avgInteraction + avgOverall) / 4).toFixed(2));
-
     res.json({
       success: true,
       totalSubmissions,
       averages: {
-        content_quality: avgContent,
-        teaching_clarity: avgTeaching,
-        interaction_level: avgInteraction,
-        overall_experience: avgOverall,
-        overall_score: grandAvg
+        content_quality: 0,
+        teaching_clarity: 0,
+        interaction_level: 0,
+        overall_experience: 0,
+        overall_score: 0
       },
       emojiDistribution: emojiCounts,
       tagFrequencies: tagCounts,
@@ -207,19 +202,21 @@ app.get('/api/admin/export', async (req, res) => {
 
     const [rows] = await pool.query(`SELECT * FROM feedback ORDER BY timestamp DESC`);
 
-    let csvContent = 'Submission ID,Timestamp,Name,College Name,Mobile Number,Email,Department,Year,Emoji Rating,Content Quality,Teaching Clarity,Interaction Level,Overall Experience,Quick Tags,Comments\n';
+    let csvContent = 'Submission ID,Timestamp,Name,College Name,Mobile Number,Email,Department,Year,Emoji Rating,Q2 Confidence,Q3 Valuable Lab,Q4 Least Clear,Q5 Balance,Q6 Instructor,Q7 Equipment,Q8 Recommend,Q9 Skill,Q10 Advanced Topics,Comments\n';
     
     rows.forEach(row => {
-      let tagsStr = '';
+      let topicsStr = '';
       try {
-        tagsStr = JSON.parse(row.quick_feedback_tags || '[]').join('; ');
+        topicsStr = JSON.parse(row.q10_advanced_topics || '[]').join('; ');
       } catch (e) {
-        tagsStr = row.quick_feedback_tags || '';
+        topicsStr = row.q10_advanced_topics || '';
       }
       
       const cleanComments = (row.comments || '').replace(/"/g, '""').replace(/\n/g, ' ');
+      const q4 = (row.q4_least_clear || '').replace(/"/g, '""').replace(/\n/g, ' ');
+      const q9 = (row.q9_skill || '').replace(/"/g, '""').replace(/\n/g, ' ');
 
-      csvContent += `${row.id},"${row.timestamp}","${row.name || ''}","${row.college_name || ''}","${row.mobile_number || ''}","${row.student_mail || ''}","${row.department || ''}","${row.year || ''}","${row.emoji_rating || ''}",${row.content_quality},${row.teaching_clarity},${row.interaction_level},${row.overall_experience},"${tagsStr}","${cleanComments}"\n`;
+      csvContent += `${row.id},"${row.timestamp}","${row.name || ''}","${row.college_name || ''}","${row.mobile_number || ''}","${row.student_mail || ''}","${row.department || ''}","${row.year || ''}","${row.emoji_rating || ''}","${row.q2_confidence || ''}","${row.q3_valuable_lab || ''}","${q4}","${row.q5_balance || ''}","${row.q6_instructor || ''}","${row.q7_equipment || ''}","${row.q8_recommend || ''}","${q9}","${topicsStr}","${cleanComments}"\n`;
     });
 
     res.setHeader('Content-Type', 'text/csv');

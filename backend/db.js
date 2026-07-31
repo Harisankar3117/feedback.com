@@ -42,21 +42,39 @@ async function initDB() {
         mobile_number VARCHAR(20),
         student_mail VARCHAR(255),
         emoji_rating VARCHAR(50),
-        content_quality INT,
-        teaching_clarity INT,
-        interaction_level INT,
-        overall_experience INT,
-        quick_feedback_tags TEXT,
+        q2_confidence VARCHAR(255),
+        q3_valuable_lab VARCHAR(255),
+        q4_least_clear TEXT,
+        q5_balance VARCHAR(255),
+        q6_instructor VARCHAR(255),
+        q7_equipment VARCHAR(255),
+        q8_recommend VARCHAR(10),
+        q9_skill TEXT,
+        q10_advanced_topics TEXT,
         comments TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
       ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // Add student_mail column if it doesn't exist
-    try {
-      await pool.query('ALTER TABLE feedback ADD COLUMN student_mail VARCHAR(255)');
-    } catch (e) {
-      // Ignore if it already exists
+    // Add new columns if they don't exist
+    const newColumns = [
+      'student_mail VARCHAR(255)',
+      'q2_confidence VARCHAR(255)',
+      'q3_valuable_lab VARCHAR(255)',
+      'q4_least_clear TEXT',
+      'q5_balance VARCHAR(255)',
+      'q6_instructor VARCHAR(255)',
+      'q7_equipment VARCHAR(255)',
+      'q8_recommend VARCHAR(10)',
+      'q9_skill TEXT',
+      'q10_advanced_topics TEXT'
+    ];
+    for (const col of newColumns) {
+      try {
+        await pool.query(`ALTER TABLE feedback ADD COLUMN ${col}`);
+      } catch (e) {
+        // Ignore if it already exists
+      }
     }
 
     // Force existing tables to support 4-byte emojis
